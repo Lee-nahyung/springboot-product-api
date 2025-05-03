@@ -26,6 +26,9 @@ spring:
           max-idle: 8
           min-idle: 0
 
+  elasticsearch:
+    uris: http://localhost:9200
+
 logging:
   level:
     # Spring Cache 인터셉터 로그 (Cacheable, CacheEvict 등 동작 로그)
