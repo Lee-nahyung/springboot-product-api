@@ -14,7 +14,10 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private int quantity;
+    
+    @Setter
     private int itemPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)

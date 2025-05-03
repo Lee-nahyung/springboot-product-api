@@ -18,8 +18,12 @@ public class Product {
 
     private String name;
     private int price;
+    // 재고 업데이트를 위한 setter
+    @Setter
     private int stock;
 
+    // 카테고리 변경을 위한 setter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -27,4 +31,5 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
     private List<OrderItem> orderItems = new ArrayList<>();
+
 }

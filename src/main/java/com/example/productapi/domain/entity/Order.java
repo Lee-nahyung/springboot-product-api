@@ -18,6 +18,7 @@ public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private int totalPrice;
 
     private LocalDateTime orderedAt;
