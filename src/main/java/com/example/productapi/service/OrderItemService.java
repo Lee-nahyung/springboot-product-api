@@ -9,6 +9,8 @@ import com.example.productapi.domain.repository.ProductRepository;
 import com.example.productapi.dto.OrderItemDto;
 import com.example.productapi.mapper.OrderItemMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,7 @@ public class OrderItemService {
      * @return 주문에 포함된 주문 항목 목록
      * @throws ResponseStatusException 주문을 찾을 수 없는 경우 (404 Not Found)
      */
+    @Cacheable(value = "orderItems", key = "'order:' + #orderId")
     public List<OrderItemDto> getOrderItemsByOrderId(Long orderId) {
         // 주문이 존재하는지 확인
         if (!orderRepository.existsById(orderId)) {
@@ -70,6 +73,7 @@ public class OrderItemService {
      * @return 조회된 주문 항목 정보
      * @throws ResponseStatusException 주문 항목을 찾을 수 없는 경우 (404 Not Found)
      */
+    @Cacheable(value = "orderItems", key = "#id")
     public OrderItemDto getOrderItemById(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -92,6 +96,7 @@ public class OrderItemService {
      *         수량이 음수인 경우 또는 재고가 부족한 경우 (400 Bad Request)
      */
     @Transactional
+    @CacheEvict(value = "orderItems", key = "#id")
     public OrderItemDto updateOrderItemQuantity(Long id, int quantity) {
         if (quantity <= 0) {
             throw new ResponseStatusException(
@@ -143,6 +148,7 @@ public class OrderItemService {
      * @throws ResponseStatusException 주문 항목을 찾을 수 없는 경우 (404 Not Found)
      */
     @Transactional
+    @CacheEvict(value = "orderItems", key = "#id")
     public void deleteOrderItem(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(

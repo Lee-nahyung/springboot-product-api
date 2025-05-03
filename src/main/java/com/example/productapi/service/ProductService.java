@@ -7,6 +7,8 @@ import com.example.productapi.domain.repository.ProductRepository;
 import com.example.productapi.dto.ProductDto;
 import com.example.productapi.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,10 @@ public class ProductService {
      */
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
+        // 신규 등록은 캐시 처리 없음
+        // 어차피 조회 시 캐시가 생성됨
+
+        // 기존 구현 유지
         productDto.setId(null); // 새 상품 생성 시 ID 필드를 null로 설정
         
         // 카테고리 검증
@@ -66,6 +72,7 @@ public class ProductService {
      * 
      * @return 전체 상품 목록
      */
+    @Cacheable(value = "products", key = "'all'")
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::toProductDto)
@@ -83,6 +90,7 @@ public class ProductService {
      * @return 조회된 상품 정보
      * @throws ResponseStatusException 상품을 찾을 수 없는 경우 (404 Not Found)
      */
+    @Cacheable(value = "products", key = "#id")
     public ProductDto getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -103,6 +111,7 @@ public class ProductService {
      * @throws ResponseStatusException 상품이나 카테고리를 찾을 수 없는 경우 (404 Not Found)
      */
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public ProductDto updateProduct(Long id, ProductDto productDto) {
         // 기존 상품이 존재하는지 확인
         if (!productRepository.existsById(id)) {
@@ -137,6 +146,7 @@ public class ProductService {
      * @throws ResponseStatusException 상품을 찾을 수 없는 경우 (404 Not Found) 또는 재고 수량이 음수인 경우 (400 Bad Request)
      */
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public ProductDto updateProductStock(Long id, int stockQuantity) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -163,6 +173,7 @@ public class ProductService {
      * @throws ResponseStatusException 상품을 찾을 수 없는 경우 (404 Not Found)
      */
     @Transactional
+    @CacheEvict(value = "products", key = "#id")
     public void deleteUser(Long id) {
         // 기존 상품이 존재하는지 확인
         if (!productRepository.existsById(id)) {
