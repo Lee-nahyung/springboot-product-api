@@ -35,6 +35,18 @@ logging:
     org.springframework.cache.interceptor: TRACE   # 캐시 키 생성, 히트/미스 여부 로그
     com.example.productapi.common.security: DEBUG  # 보안 관련 로그
     org.springframework.data.redis.core: TRACE     # Redis 템플릿 CRUD 작업 로깅
+    com.example.productapi.webhook: DEBUG         # 웹훅 관련 로그
 
 jwt:
   secret: a2V5X2ZvcldBY2Nlc3NUb2tlbkFuZFJlZnJlc2hUb2tlbkdlbmVyYXRpb24=
+
+# kakao API 설정
+kakao:
+  api:
+    client-id: 6079455b321ddd857309dd6775ca8a6a
+    client-secret: 1LqGXqSnDkhDkphaRQyK2czTzR1jqGRF
+    redirect-uri: http://localhost:8080/oauth
+    admin-key: P1nmXRfplbFDSezCLVPcDVW4zAJuGG7U9hUFQsosZbZEN2VFt7tNTAAAAAQKDQ0hAAABlp-n-7t-jFVpBnvzXw
+    access-token: liR7aNgVSxOpQ2YhRhZ2vBJicNTYhUz7AAAAAQoNG5oAAAGWosRGRlR13198v8Z
+    refresh-token: WpAPqTwb6YrqIIhCsaGQB2izueP77LedAAAAAgoNIJsAAAGWn6shGlR13198v8Zc
+    token-expiry-time: 21599

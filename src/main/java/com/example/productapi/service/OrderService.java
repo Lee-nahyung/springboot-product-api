@@ -11,6 +11,7 @@ import com.example.productapi.domain.repository.UserRepository;
 import com.example.productapi.dto.CreateOrderRequest;
 import com.example.productapi.dto.OrderDto;
 import com.example.productapi.mapper.OrderMapper;
+import com.example.productapi.webhook.service.KakaoMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,6 +44,8 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final OrderMapper orderMapper;
+
+    private final KakaoMessageService kakaoMessageService;
 
     /**
      * 새로운 주문을 생성합니다.
@@ -109,6 +112,15 @@ public class OrderService {
         // 총 가격 업데이트
         savedOrder.setTotalPrice(totalPrice);
         Order updatedOrder = orderRepository.save(savedOrder);
+
+        // 주문완료 후 메세지 전달
+        String productName = savedOrder.getOrderItems().get(0).getProduct().getName();
+        kakaoMessageService.sendOrderCompletionMessage(
+                String.valueOf(user.getId()),
+                String.valueOf(savedOrder.getId()),
+                productName,
+                savedOrder.getTotalPrice()
+        );
 
         return orderMapper.toOrderDto(updatedOrder);
     }

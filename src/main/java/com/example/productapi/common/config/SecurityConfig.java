@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/token/refresh", "/api/logout").permitAll()
                         // Swagger UI v3 (springdoc-openapi)
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/webhook/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
