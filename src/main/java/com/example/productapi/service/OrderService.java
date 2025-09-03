@@ -183,8 +183,8 @@ public class OrderService {
         // 각 주문 항목에 대한 재고 복구
         for (OrderItem item : order.getOrderItems()) {
             Product product = item.getProduct();
-            productService.updateProductStock(product.getId(), product.getStock() + item.getQuantity());
-        }
+            productService.updateProductStock(product.getId(), product.getStock() + item.getQuantity()); //서비스에서 다른 서비스 호출하는 경우
+        }                                                                                                           // 결합도 상승.
         
         orderRepository.deleteById(id);
     }
