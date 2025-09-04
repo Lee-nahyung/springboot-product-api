@@ -19,7 +19,7 @@ public class ProductSearchController {
 
     /**
      * 모든 제품을 엘라스틱서치에 인덱싱합니다.
-     */
+     */ // 배치 인덱스.
     @PostMapping("/reindex")
     public ResponseEntity<String> reindexAllProducts() {
         productIndexService.indexAllProducts();
