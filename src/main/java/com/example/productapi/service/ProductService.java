@@ -9,6 +9,7 @@ import com.example.productapi.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +112,11 @@ public class ProductService {
      * @throws ResponseStatusException 상품이나 카테고리를 찾을 수 없는 경우 (404 Not Found)
      */
     @Transactional
-    @CacheEvict(value = "products", key = "#id")
+    //@CacheEvict(value = "products", key = "#id") //단건 수정/삭제되면 전체 캐시도 갱신하도록 변경
+    @Caching(evict = {
+            @CacheEvict(value = "products", key = "'all'"),
+            @CacheEvict(value = "products", key = "#id")
+    })
     public ProductDto updateProduct(Long id, ProductDto productDto) {
         // 기존 상품이 존재하는지 확인
         if (!productRepository.existsById(id)) {
